@@ -65,7 +65,7 @@ function Faq() {
       {/* 상단 초록색 배너 영역 */}
       <div className="faq-banner">
         <button className="back-btn" onClick={() => navigate(-1)}>
-          <img src="/images/back.png" alt="뒤로가기" />
+          ⬅ 뒤로
         </button>
         <div className="faq-banner-text">
           <h1>FAQ 게시판</h1>

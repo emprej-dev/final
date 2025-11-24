@@ -40,10 +40,12 @@
   background: none;
   border: none;
   color: white;
-  font-size: 26px;
+  font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  background: #f0f0f0;
+  transition: 0.2s;
+  margin-left: 50px;
 }
 
 .back-btn:hover {

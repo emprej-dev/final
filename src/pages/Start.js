@@ -62,7 +62,7 @@ function Start() {
       </div>
 
       <button className="back-btn" onClick={() => navigate(-1)}>
-        <img src="/images/back-green.png" alt="뒤로가기" />
+        ⬅ 뒤로
       </button>
     </div>
   );

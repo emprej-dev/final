@@ -15,11 +15,6 @@ function Home() {
           <img src={logo} alt="키오누리 로고" className="logo" />
         </div>
 
-
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          ←
-        </button>  
-
         <div className="button-group">
 
           {/* 여기 추가됨 */}

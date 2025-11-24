@@ -15,6 +15,11 @@
   margin-bottom: 10px;
 }
 
+.right-buttons {
+  display: flex;
+  gap: 10px; /* ← 버튼 사이 간격 추가 */
+}
+
 .top-buttons button {
   padding: 6px 12px;
   border: none;
@@ -23,6 +28,7 @@
   font-size: 16px;
   background: #f0f0f0;
   transition: 0.2s;
+  font-weight: 500;
 }
 
 .top-buttons button:hover {
@@ -34,7 +40,8 @@
 .kiosk-title {
   color: #2ecc71;
   text-align: center;
-  font-size: 28px;
+  font-size: 30px;
+  margin-top: 30px;
   margin-bottom: 20px;
 }
 
@@ -42,7 +49,7 @@
 .category-buttons {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 15px;
   margin-bottom: 20px;
 }
 
@@ -68,6 +75,7 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   margin-top: 20px;
+  justify-items: center;
 }
 
 /* 메뉴 카드 */
@@ -96,7 +104,7 @@
   height: 100px;
   object-fit: cover;
   border-radius: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 18px;
 }
 
 .menu-name {
@@ -109,7 +117,7 @@
 .menu-price {
   font-size: 14px;
   color: #252525;
-  margin-top: 3px;
+  margin-top: 10px;
 }
 
 /* 장바구니 */
@@ -135,18 +143,63 @@
 }
 
 .cart li button {
-  background: #2ecc71;
+  /* background: #ffffff; */
   border: none;
   border-radius: 6px;
-  color: white;
+  color: #757575;
   cursor: pointer;
   padding: 3px 7px;
-  font-size: 12px;
+  font-size: 20px;
+  font-weight: 600;
 }
 
-.cart li button:hover {
-  background: #27ae60;
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  gap: 60px;
 }
+
+.cart-left {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.cart-qty {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 이건왜있지 */
+.cart-qty button {
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.cart-price {
+  width: 70px;
+  text-align: right;
+  color: #2ecc71;
+  font-weight: 600;
+}
+
+/* 삭제 버튼 영역 */
+.cart-remove {
+  margin-left: 20px;
+}
+
+.cart-remove button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #777;
+}
+
 
 /* 장바구니 페이지네이션 */
 .pagination-buttons {
@@ -187,6 +240,23 @@
   background: #27ae60;
 }
 
+.payment-ok-btn {
+  background: #2ecc71;
+  color: white;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.payment-ok-btn:hover {
+  background: #27ae60;
+}
+
+
 /* 모달 배경 */
 .modal {
   position: fixed;
@@ -203,6 +273,7 @@
 
 /* 모달 콘텐츠 */
 .modal-content {
+  position:relative;
   background: #fff;
   padding: 24px;
   border-radius: 14px;
@@ -227,6 +298,7 @@
   color: #333;
   font-weight: bold;
 }
+
 
 /* 온도/사이즈 옵션 버튼 */
 .option-group button {
@@ -319,7 +391,7 @@
   max-width: 600px;
   height: 180px;
   margin: 20px auto;
-  padding: 20px;
+  padding: 30px;
   background: white;
   border-radius: 10px;
   border: 2px solid #2ecc71;
@@ -328,6 +400,12 @@
   overflow-y: auto;
   position: relative;
   z-index: 30;
+  text-align: center;
+}
+
+.info-box p {
+  margin-bottom: 70px; /* 여기를 조절하면 간격 늘어남 */
+  white-space: pre-line;
 }
 
 /* 버튼 영역 */
@@ -339,14 +417,15 @@
 }
 
 .info-btn {
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: #2ecc71;
   border: none;
   border-radius: 8px;
-  color: rgb(18, 18, 18);
+  color: white;
   cursor: pointer;
   font-size: 16px;
   transition: 0.2s;
+  font-weight: bold;
 }
 
 .info-btn:hover {
@@ -386,36 +465,171 @@
 .card-btn {
   background: #2ecc71; /* 초록색 */
   color: white;
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   margin-right: 8px;
   transition: 0.2s;
+  font-weight: 500;
 }
 
-.card-btn:hover {
-  background: #27ae60;
-}
 
 .kakao-btn {
   background: #fdd835; /* 노란색 */
   color: black;
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   transition: 0.2s;
+  font-weight: 500;
 }
 
 .kakao-btn:hover {
   background: #fdd835;
 }
-.cancel-btn {
+
+.undo-btn{
+  background: #ddd;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  margin-left: 8px;
+  transition: 0.2s;
+  font-weight: 500;
+}
+
+/* .cancel-btn {
   background: #ddd;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   padding: 3px 6px;
-  margin-left: 6px; /* 여기서 간격 추가 */
+  margin-left: 6px;
+} */
+
+/* 모달 닫기(X) 버튼 */
+.close-modal-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #757575;  /* 회색 X */
+  font-weight: bold;
 }
+
+.quiz-start-btn {
+  margin-top: 15px;
+  padding: 8px 20px;
+  background: #2ecc71;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.quiz-start-btn:hover {
+  background: #27ae60;
+}
+
+.quiz-title {
+  font-size: 26px;
+  font-weight: bold;
+  color: #2ECC71;
+}
+
+.quiz-result-btn {
+  margin-top: 15px;
+  padding: 8px 20px;
+  background: #2ecc71;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.quiz-result-btn:hover {
+  background: #27ae60;
+}
+
+.option-btn {
+  padding: 8px 16px;
+  margin: 0 5px;
+  border: 2px solid #2ecc71;
+  border-radius: 8px;
+  background: white;
+  color: #2ecc71;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.option-btn:hover {
+  background: #2ecc71;
+  color: white;
+}
+
+.option-btn.selected {
+  background: #2ecc71;
+  color: white;
+}
+
+.option-menu-title {
+  font-size: 30px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.option-section-title {
+  color: #000000;
+  font-size: 20px !important;
+  font-weight: 500;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+
+.qty-btn {
+  border: none;
+  border-radius: 6px;
+  color: #757575;
+  cursor: pointer;
+  padding: 3px 7px;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 15px;  /* ➜ 양옆으로 10px 간격 */
+  margin-bottom: 30px;
+}
+
+.option-apply-btn {
+  background: #2ecc71;
+  color: white;
+  font-weight: bold;
+}
+
+.option-cancel-btn {
+  background: #2ecc71;
+  color: white;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.option-apply-btn:hover {
+  background: #27ae60;
+}
+
+.option-cancel-btn:hover {
+  background: #27ae60;
+}
+

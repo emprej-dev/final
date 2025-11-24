@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../../src/styles/KioskScreen.css';
 
-function KioskScreen({guideMode, closeKiosk}) {
+function KioskScreen({ guideMode, closeKiosk }) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -21,6 +21,7 @@ function KioskScreen({guideMode, closeKiosk}) {
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [cartPage, setCartPage] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState(null);
 
   // 옵션 모달 상태
   const [showOptionModal, setShowOptionModal] = useState(false);
@@ -29,17 +30,17 @@ function KioskScreen({guideMode, closeKiosk}) {
   const [optionSize, setOptionSize] = useState('M');
   const [optionQty, setOptionQty] = useState(1);
 
- useEffect(() => {
-  // 알아보기 모드 → info 모달 자동 오픈
-  if (guideMode === "arrow") {
-    setShowInfo(true);
-  }
+  useEffect(() => {
+    // 알아보기 모드 → info 모달 자동 오픈
+    if (guideMode === "arrow") {
+      setShowInfo(true);
+    }
 
-  // 퀴즈 풀기 → quiz 모달 자동 오픈
-  if (guideMode === "quiz") {
-    setShowQuizModal(true);
-  }
-}, [guideMode]);
+    // 퀴즈 풀기 → quiz 모달 자동 오픈
+    if (guideMode === "quiz") {
+      setShowQuizModal(true);
+    }
+  }, [guideMode]);
 
 
   const quizAnswerList = [
@@ -51,40 +52,60 @@ function KioskScreen({guideMode, closeKiosk}) {
     { name: '레몬에이드', price: 4000 }
   ];
 
+
   const checkQuizCorrect = () => {
-  // 메뉴별 정답 수량
-  const answerCount = {
-    '아메리카노': 2,
-    '마카롱': 3,
-    '레몬에이드': 1
+    // 정답 조건
+    const quizAnswer = [
+      { name: '아메리카노', temp: 'HOT', size: 'M', qty: 2 },
+      { name: '마카롱', qty: 3 },
+      { name: '레몬에이드', temp: 'ICE', size: 'S', qty: 1 }
+    ];
+
+    // 사용자의 장바구니 데이터를 분석
+    const userItems = {};
+
+    selectedItems.forEach(item => {
+      const key = item.name + (item.temperature || '') + (item.size || '');
+      userItems[key] = (userItems[key] || 0) + item.quantity;
+    });
+
+    // 정답 조건 확인
+    for (const answer of quizAnswer) {
+      const key = answer.name + (answer.temp || '') + (answer.size || '');
+
+      if (!userItems[key] || userItems[key] !== answer.qty) {
+        return false;
+      }
+    }
+
+    // 불필요한 추가 아이템이 있는 경우(=정답 외의 메뉴) 오답
+    const validKeys = quizAnswer.map(a => a.name + (a.temp || '') + (a.size || ''));
+    for (const key of Object.keys(userItems)) {
+      if (!validKeys.includes(key)) return false;
+    }
+
+    return true;
   };
 
-  // 장바구니에서 메뉴별 수량 계산
-  const userCount = {};
-  selectedItems.forEach(item => {
-    userCount[item.name] = (userCount[item.name] || 0) + item.quantity;
-  });
-
-  // 정답 비교
-  for (const [name, qty] of Object.entries(answerCount)) {
-    if (userCount[name] !== qty) return false;
+const infoSteps = [
+  { 
+    text: "여기는 카테고리를 선택하는 공간이에요.\n커피, 음료, 디저트 중 원하는 메뉴 종류를 바꿔볼 수 있어요.", 
+    highlight: ".category-buttons" 
+  },
+  { 
+    text: "여기에는 선택한 카테고리에 해당하는 메뉴들이 표시돼요.\n주문하고 싶은 메뉴를 클릭해 옵션을 선택해보세요.", 
+    highlight: ".menu-list" 
+  },
+  { 
+    text: "여기는 장바구니입니다.\n담은 메뉴와 옵션, 수량을 확인하고 \n필요하면 수정하거나 삭제할 수 있어요.", 
+    highlight: ".cart" 
+  },
+  { 
+    text: "장바구니에서 확인까지 마쳤다면,\n하단의 ‘결제하기’ 버튼을 클릭해 결제를 진행하면 됩니다.", 
+    highlight: ".pay-button" 
   }
+];
 
-  // 추가로 장바구니에 다른 메뉴가 있으면 틀림
-  for (const name of Object.keys(userCount)) {
-    if (!answerCount[name]) return false;
-  }
-
-  return true;
-};
-
-
-  const infoSteps = [
-    { text: "여기는 카테고리 영역입니다!", highlight: ".category-buttons", arrow: { top: "270px", left: "50%" } },
-    { text: "여기에는 메뉴가 표시돼요!", highlight: ".menu-list", arrow: { top: "450px", left: "50%" } },
-    { text: "장바구니에서는 담긴 메뉴를 확인!", highlight: ".cart", arrow: { top: "720px", left: "50%" } },
-    { text: "여기서 결제하기 버튼을 눌러 결제!", highlight: ".pay-button", arrow: { top: "850px", left: "50%" } }
-  ];
 
   useEffect(() => {
     document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
@@ -93,7 +114,6 @@ function KioskScreen({guideMode, closeKiosk}) {
       if (!step) return;
       const el = document.querySelector(step.highlight);
       if (el) el.classList.add('highlight');
-      setArrowPos(step.arrow);
     }
   }, [showInfo, currentInfoIndex]);
 
@@ -119,7 +139,7 @@ function KioskScreen({guideMode, closeKiosk}) {
       { name: '에스프레소', price: 3500, img: '/images/espresso.jpg' },
       { name: '바닐라라떼', price: 5000, img: '/images/vanillalatte.jpg' },
       { name: '카라멜마끼아또', price: 5000, img: '/images/caramelmacchiato.jpg' },
-      { name: '모카', price: 5000, img: '/images/coffee-6274506_640.jpg' },
+      { name: '카페모카', price: 5000, img: '/images/coffee-6274506_640.jpg' },
       { name: '콜드브루', price: 4500, img: '/images/coldbrew.jpg' }
     ],
     beverage: [
@@ -196,6 +216,7 @@ function KioskScreen({guideMode, closeKiosk}) {
 
   const handlePayment = (method) => {
     setShowPaymentOptions(false);
+    setPaymentMethod(method); // ← 여기 추가!
 
     if (quizMode) {
       const correct = checkQuizCorrect();
@@ -219,40 +240,35 @@ function KioskScreen({guideMode, closeKiosk}) {
   return (
     <div className="kiosk-container">
 
-      {/* 안내 화살표 */}
-      {showInfo && (
-        <img src="/images/arrow.png" className="arrow" style={{ top: arrowPos.top, left: arrowPos.left }} alt="arrow" />
-      )}
-
       {/* 상단 버튼 */}
       <div className="top-buttons">
         <button className="back-btn" onClick={() => navigate(-1)}>⬅ 뒤로</button>
         <div className="right-buttons">
           <button onClick={() => alert('음성 기능 준비 중')}>🔊</button>
           <button onClick={() => navigate('/')}>🏠 홈</button>
-          <button onClick={() => navigate('/faq')}>❓ 문의</button>
+          <button onClick={() => navigate('/faq')}>❓ 문의하기</button>
           <button onClick={() => navigate('/kiosk', { state: { from: 'infoButton' } })}>ℹ️ 알아보기</button>
           <button
             onClick={() => {
-              setSelectedItems([]);
+              // setSelectedItems([]);   // ← 장바구니 초기화
               setQuizMode(true);
               setShowQuizModal(true);
             }}
           >
-            📝 퀴즈하기
+            📝 퀴즈풀기
           </button>
         </div>
       </div>
 
-      <h1 className="kiosk-title">☕ 키오스크 주문하기</h1>
+      <h1 className="kiosk-title">키오스크 주문하기</h1>
 
       {/* 안내 모드 */}
       {showInfo && (
         <div className="info-box">
           <p>{infoSteps[currentInfoIndex].text}</p>
           <div className="info-buttons">
-            <button onClick={handleNextInfo}>다음 ▶</button>
-            <button onClick={() => setShowInfo(false)}>닫기</button>
+            <button className="info-btn" onClick={handleNextInfo}>다음 ➡</button>
+            <button className="info-btn" onClick={() => setShowInfo(false)}>닫기</button>
           </div>
         </div>
       )}
@@ -286,15 +302,44 @@ function KioskScreen({guideMode, closeKiosk}) {
           <>
             <ul>
               {paginatedItems.map((item, i) => (
-                <li key={i}>
-                  {item.name} ({item.price}원)
-                  {item.temperature && <> | {item.temperature}</>}
-                  {item.size && <> | {item.size}</>}
-                  <button onClick={() => updateQty(startIdx + i, item.quantity - 1)}>-</button>
-                  {item.quantity}
-                  <button onClick={() => updateQty(startIdx + i, item.quantity + 1)}>+</button>
-                  <button onClick={() => handleRemoveItem(startIdx + i)}>❌</button>
+                // <li key={i}>
+                //   {item.name} ({item.price}원)
+                //   {item.temperature && <> | {item.temperature}</>}
+                //   {item.size && <> | {item.size}</>}
+                //   <button onClick={() => updateQty(startIdx + i, item.quantity - 1)}>-</button>
+                //   {item.quantity}
+                //   <button onClick={() => updateQty(startIdx + i, item.quantity + 1)}>+</button>
+                //   <button onClick={() => handleRemoveItem(startIdx + i)}>✕</button>
+                // </li>
+
+                <li className="cart-item" key={i}>
+
+                  {/* 왼쪽: 메뉴명 + 옵션 */}
+                  <div className="cart-left">
+                    {item.name}
+                    {item.temperature && <> | {item.temperature}</>}
+                    {item.size && <> | {item.size}</>}
+                  </div>
+
+                  {/* 수량 버튼 */}
+                  <div className="cart-qty">
+                    <button onClick={() => updateQty(startIdx + i, item.quantity - 1)}>-</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => updateQty(startIdx + i, item.quantity + 1)}>+</button>
+                  </div>
+
+                  {/* 가격 */}
+                  <div className="cart-price">
+                    {item.price * item.quantity}원
+                  </div>
+
+                  {/* 삭제 버튼 */}
+                  <div className="cart-remove">
+                    <button onClick={() => handleRemoveItem(startIdx + i)}>✕</button>
+                  </div>
+
                 </li>
+
               ))}
             </ul>
 
@@ -325,10 +370,10 @@ function KioskScreen({guideMode, closeKiosk}) {
       {showPaymentOptions && (
         <div className="modal">
           <div className="modal-content">
-            <h2>결제 수단을 선택하세요</h2>
+            <h2>결제 수단을 선택하세요.</h2>
             <button className="card-btn" onClick={() => handlePayment('card')}>💳 카드 결제</button>
             <button className="kakao-btn" onClick={() => handlePayment('kakao')}>🟡 카카오페이</button>
-            <button onClick={() => setShowPaymentOptions(false)}>취소</button>
+            <button className="undo-btn" onClick={() => setShowPaymentOptions(false)}>취소</button>
           </div>
         </div>
       )}
@@ -337,9 +382,14 @@ function KioskScreen({guideMode, closeKiosk}) {
       {showPaymentModal && (
         <div className="modal">
           <div className="modal-content">
-            <h2>✅ 결제 완료!</h2>
-            <p>감사합니다 😊</p>
-            <button onClick={handleCloseModal}>확인</button>
+            <h2>결제가 완료되었습니다.</h2>
+
+            {paymentMethod === "card" ? (
+              <p>카드를 제거해주세요.</p>
+            ) : (
+              <p>영수증을 가져가주세요.</p>
+            )}
+            <button className="payment-ok-btn" onClick={handleCloseModal}>확인</button>
           </div>
         </div>
       )}
@@ -348,30 +398,30 @@ function KioskScreen({guideMode, closeKiosk}) {
       {showOptionModal && (
         <div className="modal">
           <div className="modal-content">
-            <h2>{selectedMenu.name}</h2>
+            <h2 className="option-menu-title">{selectedMenu.name}</h2>
 
-            <h3>온도 선택</h3>
+            <h3 className="option-section-title">온도 선택</h3>
             <div className="option-row">
               <button
-                className={optionTemp === 'HOT' ? 'active' : ''}
+                className={`option-btn ${optionTemp === 'HOT' ? 'selected' : ''}`}
                 onClick={() => setOptionTemp('HOT')}
               >
                 HOT
               </button>
               <button
-                className={optionTemp === 'ICE' ? 'active' : ''}
+                className={`option-btn ${optionTemp === 'ICE' ? 'selected' : ''}`}
                 onClick={() => setOptionTemp('ICE')}
               >
                 ICE
               </button>
             </div>
 
-            <h3>사이즈 선택</h3>
+            <h3 className="option-section-title">사이즈 선택</h3>
             <div className="option-row">
               {['S', 'M', 'L'].map((size) => (
                 <button
                   key={size}
-                  className={optionSize === size ? 'active' : ''}
+                  className={`option-btn ${optionSize === size ? 'selected' : ''}`}
                   onClick={() => setOptionSize(size)}
                 >
                   {size}
@@ -379,15 +429,15 @@ function KioskScreen({guideMode, closeKiosk}) {
               ))}
             </div>
 
-            <h3>수량</h3>
+            <h3 className="option-section-title">수량</h3>
             <div className="option-row">
-              <button onClick={() => setOptionQty((q) => Math.max(1, q - 1))}>-</button>
+              <button className="qty-btn" onClick={() => setOptionQty((q) => Math.max(1, q - 1))}>-</button>
               {optionQty}
-              <button onClick={() => setOptionQty((q) => q + 1)}>+</button>
+              <button className="qty-btn" onClick={() => setOptionQty((q) => q + 1)}>+</button>
             </div>
 
-            <button className="apply-btn" onClick={applyOption}>장바구니 담기</button>
-            <button className="cancel-btn" onClick={() => setShowOptionModal(false)}>취소</button>
+            <button className="apply-btn option-apply-btn" onClick={applyOption}>장바구니 담기</button>
+            <button className="cancel-btn option-cancel-btn" onClick={() => setShowOptionModal(false)}>취소</button>
           </div>
         </div>
       )}
@@ -396,17 +446,27 @@ function KioskScreen({guideMode, closeKiosk}) {
       {showQuizModal && (
         <div className="modal">
           <div className="modal-content">
-            <h2>퀴즈! 🎉</h2>
+
+            {/* ✖ 닫기 버튼 */}
+            <button className="close-modal-btn" onClick={() => setShowQuizModal(false)}>
+              ✕
+            </button>
+
+            <h2 className="quiz-title">퀴즈 풀기</h2>
             <p>
-              친구들과 음료를 포장하려고 합니다!<br />
-              아래 주문을 <strong>직접 선택해서 장바구니에 담고 결제</strong>하세요.
+              친구들과 음료를 포장주문하려고 합니다.<br />
+              아래 메뉴를 <strong>정확한 옵션까지 선택해서 결제</strong>하세요.
               <br /><br />
-              1. 아메리카노 2잔<br />
-              2. 마카롱 3개<br />
-              3. 레몬에이드 1잔
+              1. 아메리카노  |  HOT | M 사이즈 | 2잔<br />
+              2. 마카롱 | 3개<br />
+              3. 레몬에이드 | ICE | S 사이즈 | 1잔
             </p>
 
-            <button onClick={() => setShowQuizModal(false)}>시작하기 ▶</button>
+
+            <button className="quiz-start-btn" onClick={() => setShowQuizModal(false)}>
+              시작하기
+            </button>
+
           </div>
         </div>
       )}
@@ -417,9 +477,9 @@ function KioskScreen({guideMode, closeKiosk}) {
           <div className="modal-content">
             {quizResultModal === 'success' ? (
               <>
-                <h2>🎉 정답입니다!</h2>
-                <p>잘하셨어요! 퀴즈 성공 🎉</p>
-                <button onClick={() => {
+                <h2> 정답입니다!🎉 </h2>
+                <p>모두 맞게 주문하셨어요.</p>
+                <button className="quiz-result-btn" onClick={() => {
                   setQuizResultModal(null);
                   setQuizMode(false);
                   setSelectedItems([]);
@@ -427,9 +487,9 @@ function KioskScreen({guideMode, closeKiosk}) {
               </>
             ) : (
               <>
-                <h2>❌ 틀렸습니다</h2>
-                <p>문제와 다릅니다. 다시 시도하세요!</p>
-                <button onClick={() => setQuizResultModal(null)}>확인</button>
+                <h2>다시 시도해보세요.</h2>
+                <p>퀴즈와 다른 메뉴입니다. 다시 주문해볼까요?</p>
+                <button className="quiz-result-btn" onClick={() => setQuizResultModal(null)}>확인</button>
               </>
             )}
           </div>

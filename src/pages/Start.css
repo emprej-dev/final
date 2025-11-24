@@ -4,8 +4,9 @@
   flex-direction: column;
   justify-content: center; /* 세로 중앙 정렬 */
   align-items: center;     /* 가로 중앙 정렬 */
-  height: 100vh;           /* 화면 전체 높이 */
+  height: 100vh;             /* 화면 전체 높이 */
   background-color: #ffffff;
+  overflow: hidden;
 
 }
 
@@ -13,7 +14,6 @@
 .content-box {
   background-color: #f7f7f7;
   width: 500px;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 150px;
+  margin-bottom: 120px;
 }
 
 /* 로고 이미지 */
