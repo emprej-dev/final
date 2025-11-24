@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../../src/styles/KioskScreen.css';
 
-function KioskScreen() {
+function KioskScreen({guideMode, closeKiosk}) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -29,10 +29,18 @@ function KioskScreen() {
   const [optionSize, setOptionSize] = useState('M');
   const [optionQty, setOptionQty] = useState(1);
 
-  useEffect(() => {
-    if (location.state?.from === 'infoButton') setShowInfo(true);
-    if (location.state?.from === 'quizButton') setShowQuizModal(true);
-  }, [location.state]);
+ useEffect(() => {
+  // 알아보기 모드 → info 모달 자동 오픈
+  if (guideMode === "arrow") {
+    setShowInfo(true);
+  }
+
+  // 퀴즈 풀기 → quiz 모달 자동 오픈
+  if (guideMode === "quiz") {
+    setShowQuizModal(true);
+  }
+}, [guideMode]);
+
 
   const quizAnswerList = [
     { name: '아메리카노', price: 4000 },

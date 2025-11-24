@@ -5,64 +5,67 @@ import logo from "../assets/kionuri_logo.svg";
 import KioskScreen from "./KioskScreen";
 
 function Start() {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-// KioskScreen을 보여줄지 여부
-const [showKiosk, setShowKiosk] = useState(false);
+  // KioskScreen을 보여줄지 여부
+  const [showKiosk, setShowKiosk] = useState(false);
 
-// 안내 팝업 모드 (arrow / box / null)
-const [guideMode, setGuideMode] = useState(null);
+  // 안내 팝업 모드 (arrow / quiz / null)
+  const [guideMode, setGuideMode] = useState(null);
 
-// ⭐ Kiosk 화면으로 열기
-const openKiosk = (mode) => {
-setGuideMode(mode);
-setShowKiosk(true);
-};
+  // ⭐ Kiosk 화면으로 열기
+  const openKiosk = (mode) => {
+    setGuideMode(mode);
+    setShowKiosk(true);
+  };
 
-// ⭐ Kiosk 화면 닫기 (Start 화면으로 돌아가기)
-const closeKiosk = () => {
-setShowKiosk(false);
-setGuideMode(null);
-};
+  // ⭐ Kiosk 화면 닫기
+  const closeKiosk = () => {
+    setShowKiosk(false);
+    setGuideMode(null);
+  };
 
-// ⭐ Kiosk 열기 버튼들
-const handleLearnClick = () => openKiosk("arrow");  // 알아보기
-const handlePracticeClick = () => openKiosk(null);  // 연습하기
-const handleQuizClick = () => openKiosk(null);      // 퀴즈풀기
+  // 버튼 핸들러
+  const handleLearnClick = () => openKiosk("arrow");
+  const handlePracticeClick = () => openKiosk(null);
+  const handleQuizClick = () => openKiosk("quiz");
 
-// ⭐ Kiosk 화면이면 KioskScreen 렌더
-if (showKiosk) {
-return <KioskScreen guideMode={guideMode} closeKiosk={closeKiosk} />;
-}
+  // ⭐ showKiosk면 바로 KioskScreen 렌더
+  if (showKiosk) {
+    return <KioskScreen guideMode={guideMode} closeKiosk={closeKiosk} />;
+  }
 
-// ⭐ Start 화면
-return ( <div className="app-container"> <div className="content-box"> <div className="logo-section"> <img src={logo} alt="키오누리 로고" className="logo" /> </div>
+  return (
+    <div className="app-container">
+      <div className="content-box">
+        <div className="logo-section">
+          <img src={logo} alt="키오누리 로고" className="logo" />
+        </div>
 
-```
-    <div className="button-group">
-      <button className="main-button" onClick={handleLearnClick}>
-        알아보기
-      </button>
+        <div className="button-group">
+          <button className="main-button" onClick={handleLearnClick}>
+            알아보기
+          </button>
 
-      <button className="main-button" onClick={handlePracticeClick}>
-        연습하기
-      </button>
+          <button className="main-button" onClick={handlePracticeClick}>
+            연습하기
+          </button>
 
-      <button className="main-button" onClick={handleQuizClick}>
-        퀴즈풀기
-      </button>
+          <button className="main-button" onClick={handleQuizClick}>
+            퀴즈풀기
+          </button>
 
-      <button className="main-button" onClick={() => navigate("/faq")}>
-        문의하기
+          <button className="main-button" onClick={() => navigate("/faq")}>
+            문의하기
+          </button>
+        </div>
+      </div>
+
+      <button className="back-btn" onClick={() => navigate(-1)}>
+        <img src="/images/back-green.png" alt="뒤로가기" />
       </button>
     </div>
-  </div>
-
-  <button className="back-btn" onClick={() => navigate(-1)}>
-    <img src="/images/back-green.png" alt="뒤로가기" />
-  </button>
-</div>
-);
+  );
 }
 
 export default Start;
