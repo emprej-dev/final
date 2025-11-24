@@ -87,24 +87,24 @@ function KioskScreen({ guideMode, closeKiosk }) {
     return true;
   };
 
-const infoSteps = [
-  { 
-    text: "여기는 카테고리를 선택하는 공간이에요.\n커피, 음료, 디저트 중 원하는 메뉴 종류를 바꿔볼 수 있어요.", 
-    highlight: ".category-buttons" 
-  },
-  { 
-    text: "여기에는 선택한 카테고리에 해당하는 메뉴들이 표시돼요.\n주문하고 싶은 메뉴를 클릭해 옵션을 선택해보세요.", 
-    highlight: ".menu-list" 
-  },
-  { 
-    text: "여기는 장바구니입니다.\n담은 메뉴와 옵션, 수량을 확인하고 \n필요하면 수정하거나 삭제할 수 있어요.", 
-    highlight: ".cart" 
-  },
-  { 
-    text: "장바구니에서 확인까지 마쳤다면,\n하단의 ‘결제하기’ 버튼을 클릭해 결제를 진행하면 됩니다.", 
-    highlight: ".pay-button" 
-  }
-];
+  const infoSteps = [
+    {
+      text: "여기는 카테고리를 선택하는 공간이에요.\n커피, 음료, 디저트 중 원하는 메뉴 종류를 바꿔볼 수 있어요.",
+      highlight: ".category-buttons"
+    },
+    {
+      text: "여기에는 선택한 카테고리에 해당하는 메뉴들이 표시돼요.\n주문하고 싶은 메뉴를 클릭해 옵션을 선택해보세요.",
+      highlight: ".menu-list"
+    },
+    {
+      text: "여기는 장바구니입니다.\n담은 메뉴와 옵션, 수량을 확인하고 \n필요하면 수정하거나 삭제할 수 있어요.",
+      highlight: ".cart"
+    },
+    {
+      text: "장바구니에서 확인까지 마쳤다면,\n하단의 ‘결제하기’ 버튼을 클릭해 결제를 진행하면 됩니다.",
+      highlight: ".pay-button"
+    }
+  ];
 
 
   useEffect(() => {
@@ -343,6 +343,13 @@ const infoSteps = [
               ))}
             </ul>
 
+            {/* 합계 표시 영역 */}
+            <div className="cart-total">
+              <span>합계</span>
+              <span className="cart-total-price">{totalPrice.toLocaleString()}원</span>
+            </div>
+
+
             <div className="pagination-buttons">
               <button onClick={() => setCartPage(Math.max(cartPage - 1, 0))} disabled={cartPage === 0}>◀ 이전</button>
               <button
@@ -361,7 +368,7 @@ const infoSteps = [
 
         {selectedItems.length > 0 && (
           <button className="pay-button" onClick={handlePay}>
-            결제하기 ({totalPrice}원)
+            결제하기
           </button>
         )}
       </div>
