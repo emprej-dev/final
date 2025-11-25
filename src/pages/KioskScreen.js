@@ -224,6 +224,24 @@ function KioskScreen({ guideMode, closeKiosk }) {
       return;
     }
 
+    // ⭐⭐⭐ 여기부터 서버로 주문 저장하는 코드 추가 ⭐⭐⭐
+    fetch("https://final-backend-gj0d.onrender.com/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items: selectedItems,
+        totalPrice: totalPrice
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log("✅ 주문이 서버에 저장됨:", data);
+      })
+      .catch(err => {
+        console.error("❌ 주문 저장 실패:", err);
+      });
+    // ⭐⭐⭐ 여기까지 추가 ⭐⭐⭐
+
     alert(`${method === 'card' ? '💳 카드' : '🟡 카카오페이'} 결제 완료!`);
     setShowPaymentModal(true);
   };
